@@ -219,11 +219,11 @@ textarea {
 
 .node-card {
   position: absolute;
-  top: 18px;
+  top: 84px;
   left: 50%;
   transform: translateX(-42%);
   width: 344px;
-  max-height: calc(100% - 36px);
+  max-height: calc(100% - 102px);
   overflow: auto;
   z-index: 4;
   background: #fff;
