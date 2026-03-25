@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import ForceGraph2D from "react-force-graph-2d";
 
 const colorByGroup = {
@@ -83,7 +83,6 @@ export function GraphCanvas({
   const graphRef = useRef(null);
   const shellRef = useRef(null);
   const hasAutoFitRef = useRef(false);
-  const [cardPosition, setCardPosition] = useState(null);
   const selectedEntries = selectedNode
     ? Object.entries(selectedNode.payload).filter(([, value]) => value !== null && value !== "")
     : [];
@@ -114,54 +113,6 @@ export function GraphCanvas({
 
     return () => clearTimeout(timer);
   }, [graph, isMinimized]);
-
-  useEffect(() => {
-    if (!selectedNode || !graphRef.current || !shellRef.current) {
-      setCardPosition(null);
-      return;
-    }
-
-    const graphInstance = graphRef.current;
-    const shell = shellRef.current;
-    const canvas = shell.querySelector("canvas");
-    if (!canvas || typeof selectedNode.x !== "number" || typeof selectedNode.y !== "number") {
-      setCardPosition(null);
-      return;
-    }
-
-    const transform = graphInstance.screen2GraphCoords(0, 0);
-    const originScreen = graphInstance.graph2ScreenCoords(transform.x, transform.y);
-    const selectedScreen = graphInstance.graph2ScreenCoords(selectedNode.x, selectedNode.y);
-    const offsetX = selectedScreen.x - originScreen.x;
-    const offsetY = selectedScreen.y - originScreen.y;
-
-    const shellRect = shell.getBoundingClientRect();
-    const cardWidth = 344;
-    const cardHeight = 420;
-    const margin = 18;
-
-    let left = offsetX + 26;
-    let top = offsetY - 24;
-
-    if (left + cardWidth > shellRect.width - margin) {
-      left = offsetX - cardWidth - 26;
-    }
-    if (left < margin) {
-      left = margin;
-    }
-
-    if (top + cardHeight > shellRect.height - margin) {
-      top = shellRect.height - cardHeight - margin;
-    }
-    if (top < 78) {
-      top = 78;
-    }
-
-    setCardPosition({
-      left,
-      top,
-    });
-  }, [selectedNode, graph, isMinimized]);
 
   return (
     <div
@@ -257,18 +208,7 @@ export function GraphCanvas({
       />
       )}
       {selectedNode ? (
-        <div
-          className="node-card"
-          style={
-            cardPosition
-              ? {
-                  left: `${cardPosition.left}px`,
-                  top: `${cardPosition.top}px`,
-                  transform: "none",
-                }
-              : undefined
-          }
-        >
+        <div className="node-card">
           <h3>{selectedNode.label}</h3>
           <p>Entity: {selectedNode.kind}</p>
           <div className="payload">
