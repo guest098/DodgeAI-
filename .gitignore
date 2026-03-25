@@ -1,0 +1,11 @@
+node_modules/
+dist/
+build/
+.env
+.DS_Store
+*.db
+*.sqlite
+*.sqlite3
+coverage/
+apps/api/data/
+apps/api/tmp/
