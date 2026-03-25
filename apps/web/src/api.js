@@ -1,25 +1,35 @@
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/+$/, "");
+
+function buildApiUrl(path) {
+  return API_BASE_URL ? `${API_BASE_URL}${path}` : path;
+}
+
 export async function fetchSeedGraph() {
-  const response = await fetch("/api/graph/seed");
+  const response = await fetch(buildApiUrl("/api/graph/seed"));
   return response.json();
 }
 
 export async function fetchGraphStats() {
-  const response = await fetch("/api/graph/stats");
+  const response = await fetch(buildApiUrl("/api/graph/stats"));
   return response.json();
 }
 
 export async function fetchNeighbors(nodeId) {
-  const response = await fetch(`/api/graph/neighbors/${encodeURIComponent(nodeId)}`);
+  const response = await fetch(
+    buildApiUrl(`/api/graph/neighbors/${encodeURIComponent(nodeId)}`),
+  );
   return response.json();
 }
 
 export async function traceBillingPath(billingDocument) {
-  const response = await fetch(`/api/graph/trace/billing/${encodeURIComponent(billingDocument)}`);
+  const response = await fetch(
+    buildApiUrl(`/api/graph/trace/billing/${encodeURIComponent(billingDocument)}`),
+  );
   return response.json();
 }
 
 export async function askQuestion(question, sessionId) {
-  const response = await fetch("/api/chat", {
+  const response = await fetch(buildApiUrl("/api/chat"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -59,7 +69,9 @@ export function askQuestionStream({
     params.set("sessionId", sessionId);
   }
 
-  const source = new EventSource(`/api/chat/stream?${params.toString()}`);
+  const source = new EventSource(
+    buildApiUrl(`/api/chat/stream?${params.toString()}`),
+  );
   let closedIntentionally = false;
 
   function closeSource() {
